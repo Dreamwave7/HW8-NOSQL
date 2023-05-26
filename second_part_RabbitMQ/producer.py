@@ -4,6 +4,7 @@ from mongoengine import *
 from models_users import Contacts
 import os
 from random import randint
+import json
 
 fake = Faker()
 url = os.environ.get('CLOUDAMQP_URL', 'amqps://aorwbbgt:wHGa_268pn_QbEPfX2bUESraKvnjGglG@hawk.rmq.cloudamqp.com/aorwbbgt')
@@ -25,9 +26,29 @@ def seed():
             ).save()
         
 
+def main():
+    contact_list = Contacts.objects()
+    for i in contact_list:
+        message = {
+            "id": str(i["id"]),
+            "task": f"call to {fake.name()}"
+            }
+    
+        
+        channel.basic_publish(
+            exchange="task",
+            routing_key="message",
+            body= json.dumps(message).encode(),
+            properties=pika.BasicProperties(
+                delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE)
+            )
+    
+    connectn.close()
 
-
-
+if __name__ == "__main__":
+    seed()
+    main()
+        
 
 
 
