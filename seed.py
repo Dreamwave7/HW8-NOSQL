@@ -2,7 +2,6 @@ from models import *
 import pprint
 import json
 
-dict_authors = {}
 
 
 def seed_authors():
@@ -16,23 +15,24 @@ def seed_authors():
             born_location = i["born_location"],
             description = i["description"]
             )
-        dict_authors[i["fullname"]] = author
         author.save()
 
 def seed_quotes():
     with open("quotes.json", encoding="utf8") as file:
         quotes = json.load(file)
     for i in quotes:
-        author = i["author"]
+        auth = Authors.objects(fullname = i["author"]).first()
         quote = Quotes(
             tags = i["tags"],
-            author = dict_authors[author],
+            author = auth,
             quote = i["quote"]
             )
         quote.save()
 
-seed_authors()
-seed_quotes()
+
+if __name__ == "__main__":
+    seed_authors()
+    seed_quotes()
 
 
 
