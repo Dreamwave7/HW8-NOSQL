@@ -1,10 +1,11 @@
 import pika
 from faker import *
 from mongoengine import *
-from models import
+from models_users import Contacts
 import os
+from random import randint
 
-
+fake = Faker()
 url = os.environ.get('CLOUDAMQP_URL', 'amqps://aorwbbgt:wHGa_268pn_QbEPfX2bUESraKvnjGglG@hawk.rmq.cloudamqp.com/aorwbbgt')
 params = pika.URLParameters(url)
 connectn = pika.BlockingConnection(params)
@@ -16,8 +17,13 @@ channel.queue_bind(exchange="task", queue="message")
 
 def seed():
     for i in range(10):
-        user = Contacts
-
+        user = Contacts(
+            fullname = fake.name(),
+            email = fake.email(),
+            age = randint(20,30),
+            send_sms = False
+            ).save()
+        
 
 
 

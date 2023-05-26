@@ -7,6 +7,3 @@ class Contacts(Document):
     email = StringField()
     age = IntField()
     send_sms = BooleanField()
-
-def test():
-    pass
